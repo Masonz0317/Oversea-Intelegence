@@ -45,6 +45,60 @@
   <a href="https://discord.gg/NjYzJD3GM3">Discord</a>
 </h4>
 
+> ⚠️ **本仓库基于 RAGFlow 官方源码，集成了智能驾驶出海咨询大模型。**
+> 以下为相较于官方源码的变更说明。
+
+## 📋 相较 RAGFlow 源码的变更
+
+### 1. 新增页面：智能驾驶出海咨询（overseas-driving）
+
+| 路径 | 说明 |
+|---|---|
+| `web/src/pages/overseas-driving/` | 出海咨询主页面（三栏布局：侧边栏 + 聊天区 + 文件检索） |
+| `web/src/pages/overseas-driving/admin/` | 管理员后台页面 |
+| `web/src/routes.tsx` | 新增 `/overseas-driving` 和 `/overseas-driving/admin` 路由（`layout: false`） |
+
+核心功能：
+- 用户邮箱验证码 / 密码登录注册
+- SSE 流式对话（复用 RAGFlow `useSendMessageWithSse`）
+- 对话历史管理（新建、切换、删除）
+- 右侧文档检索面板
+- 个人资料管理、密码修改
+- 管理员后台：用户 CRUD、聊天记录查看、CSV 导出、Token 统计
+- 中国时区（UTC+8）适配
+
+### 2. 新增后端服务（overseas-backend）
+
+| 文件 | 说明 |
+|---|---|
+| `overseas-backend/server.py` | FastAPI 后端（端口 9005），SQLite + bcrypt + JWT |
+| `overseas-backend/Dockerfile` | 后端 Docker 镜像构建 |
+
+API 模块：
+- 用户认证（邮箱密码 / 验证码登录）
+- 用户资料管理、密码修改
+- 聊天记录 CRUD
+- 管理员用户管理、CSV 导出
+- LLM 代理（SSE 流式 + Token 统计）
+- LLM 配置管理（管理员设置 API Key / Base URL / Model）
+
+### 3. Docker 配置变更
+
+| 文件 | 变更 |
+|---|---|
+| `docker/.env` | `MACOS=1`，内存限制 `MEM_LIMIT=2G`，时区 `TZ=Asia/Shanghai` |
+| `docker/docker-compose-base.yml` | 新增 overseas-backend 端口映射 |
+| `docker/docker-compose-macos.yml` | 新增 `overseas-backend` 服务定义 |
+
+### 4. 静态资源
+
+| 文件 | 说明 |
+|---|---|
+| `web/public/CAERI.png` | 品牌 Logo |
+| `web/public/caeri-logo.png` | 中国汽研 Logo |
+
+---
+
 <div align="center" style="margin-top:20px;margin-bottom:20px;">
 <img src="https://raw.githubusercontent.com/infiniflow/ragflow-docs/refs/heads/image/image/ragflow-octoverse.png" width="1200"/>
 </div>
