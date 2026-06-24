@@ -74,6 +74,7 @@ export enum Routes {
   AdminWhitelist = `${Admin}/whitelist`,
   AdminRoles = `${Admin}/roles`,
   AdminMonitoring = `${Admin}/monitoring`,
+  OverseasDriving = '/overseas-driving',
 }
 
 const defaultRouteFallback = (
@@ -136,6 +137,16 @@ const routeConfigOptions = [
     Component: () => import('@/pages/agents'),
   },
   {
+    path: Routes.OverseasDriving,
+    Component: () => import('@/pages/overseas-driving'),
+    layout: false,
+  },
+  {
+    path: Routes.OverseasDriving + '/admin',
+    Component: () => import('@/pages/overseas-driving/admin'),
+    layout: false,
+  },
+  {
     path: '/document/:id',
     Component: () => import('@/pages/document-viewer'),
     layout: false,
@@ -147,24 +158,7 @@ const routeConfigOptions = [
   },
   {
     path: Routes.Root,
-    layout: false,
-    Component: () => import('@/layouts/root-layout'),
-    loader: ({ request }: { request: Request }) => {
-      const url = new URL(request.url);
-      const auth = url.searchParams.get('auth');
-      if (auth) {
-        authorizationUtil.setAuthorization(auth);
-        url.searchParams.delete('auth');
-        return redirect(`${url.pathname}${url.search}`);
-      }
-      return null;
-    },
-    children: [
-      {
-        path: Routes.Root,
-        Component: () => import('@/pages/home'),
-      },
-    ],
+    element: <Navigate to={Routes.OverseasDriving} replace />,
   },
   {
     path: Routes.Chat + '/:id',
